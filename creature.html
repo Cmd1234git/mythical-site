@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mythical Creatures - Mythologies</title>
+
+  <style>
+    /* Reset & General */
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #2c3e50, #4ca1af);
+      color: #fff;
+      height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Hamburger Menu */
+    .hamburger {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      width: 30px;
+      height: 25px;
+      cursor: pointer;
+      z-index: 1001;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .hamburger div {
+      background-color: white;
+      height: 4px;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    .hamburger.active div:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+    .hamburger.active div:nth-child(2) {
+      opacity: 0;
+    }
+    .hamburger.active div:nth-child(3) {
+      transform: rotate(-45deg) translate(6px, -6px);
+    }
+
+    /* Sidebar Menu */
+    .sidebar {
+      position: fixed;
+      top: 0; left: -250px;
+      width: 250px;
+      height: 100%;
+      background-color: #3a0ca3;
+      box-shadow: 2px 0 12px rgba(0,0,0,0.7);
+      padding-top: 60px;
+      transition: left 0.3s ease;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar.open {
+      left: 0;
+    }
+
+    .sidebar a {
+      color: white;
+      text-decoration: none;
+      padding: 15px 30px;
+      font-size: 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      transition: background-color 0.2s ease;
+    }
+    .sidebar a:hover {
+      background-color: #5726ca;
+    }
+
+    #overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background-color: rgba(0,0,0,0.5);
+      display: none;
+      z-index: 999;
+    }
+    #overlay.active {
+      display: block;
+    }
+
+    /* Search Bar */
+    .search-bar {
+      max-width: 500px;
+      margin: 80px auto 40px;
+      text-align: center;
+    }
+    .search-bar input {
+      width: 100%;
+      padding: 12px 18px;
+      font-size: 18px;
+      border-radius: 30px;
+      border: none;
+      outline: none;
+      box-shadow: 0 0 10px #5726ca88;
+      background-color: rgba(255, 255, 255, 0.15);
+      color: white;
+      transition: background-color 0.3s ease;
+    }
+    .search-bar input::placeholder {
+      color: #ddd;
+    }
+    .search-bar input:focus {
+      background-color: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 0 20px #7e49ffcc;
+    }
+
+    /* Cards Container */
+    .cards {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 30px;
+      padding: 0 20px 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .mythology-card {
+      background: rgba(255,255,255,0.1);
+      border-radius: 20px;
+      width: 280px;
+      padding: 30px 20px;
+      text-align: center;
+      box-shadow:
+        inset 0 0 40px 2px rgba(255,255,255,0.1),
+        0 0 15px 2px #7e49ff;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      color: #e1d9ff;
+      font-weight: 600;
+      user-select: none;
+      text-decoration: none;
+    }
+    .mythology-card:hover {
+      transform: translateY(-10px);
+      box-shadow:
+        inset 0 0 60px 4px #a998ff,
+        0 0 30px 6px #b388ff;
+      color: #fff;
+    }
+
+    .mythology-card::before {
+      content: "♠ ♦ ♣ ♥";
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 24px;
+      opacity: 0.15;
+      pointer-events: none;
+      font-family: "Arial Black", Arial, sans-serif;
+    }
+
+    .mythology-card h3 {
+      margin: 0 0 15px;
+      font-size: 24px;
+    }
+    .mythology-card p {
+      font-size: 16px;
+      line-height: 1.4;
+      color: #d3cfffcc;
+      margin: 0;
+    }
+
+    .mythology-card img {
+      width: 100%;
+      border-radius: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 0 15px #7e49ffcc;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hamburger Icon -->
+  <div class="hamburger" id="hamburger">
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+
+  <!-- Sidebar Menu -->
+  <nav class="sidebar" id="sidebar">
+    <a href="mythical.html">Home</a>
+    <a href="creature.html">Creature</a>
+    <a href="about.html">About</a>
+  </nav>
+
+  <!-- Overlay -->
+  <div id="overlay"></div>
+
+  <!-- Search Bar -->
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search your favourite mythical creature..." onkeyup="searchCreatures()" />
+  </div>
+
+  <!-- Cards -->
+  <section class="cards" id="cardsContainer"></section>
+
+  <script>
+    const creatures = [
+      {
+        name: "Greek Mythology",
+        description: "Mythical creatures and gods from ancient Greece.",
+        image: "https://broadview.org/wp-content/uploads/2023/02/Medusa_RachelPerciphone_HiRes-scaled-1920x0-c-default.jpg",
+        link: "greek.html"
+      },
+      {
+        name: "chinese Mythology",
+        description: "Legends and creatures from Japan's rich folklore.",
+        image: "https://d45s05r8k6bon.cloudfront.net/data/image/original/2014/03/23/df7e148cabfd9b608090fa5ee3348bfe.jpg"
+      },
+      {
+        name: "Sri Lankan Mythology",
+        description: "Ancient myths and legendary beings from Sri Lanka.",
+        image: "https://i.pinimg.com/736x/cd/c1/b9/cdc1b9407b6bdce0a1999b3e97b28982.jpg"
+      },
+      {
+        name: "japanese Mythology",
+        description: "Mythical creatures and legends from Chinese culture.",
+        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Amaterasu_cave_wide.jpg/250px-Amaterasu_cave_wide.jpg"
+      }
+    ];
+
+    const cardsContainer = document.getElementById('cardsContainer');
+
+    function createCard(creature) {
+      const card = document.createElement(creature.link ? 'a' : 'div');
+      card.className = 'mythology-card';
+      if (creature.link) card.href = creature.link;
+
+      card.innerHTML = `
+        <img src="${creature.image}" alt="${creature.name}" />
+        <h3>${creature.name}</h3>
+        <p>${creature.description}</p>
+      `;
+      return card;
+    }
+
+    function loadCards() {
+      creatures.forEach(creature => {
+        const card = createCard(creature);
+        cardsContainer.appendChild(card);
+      });
+    }
+
+    function searchCreatures() {
+      const input = document.getElementById('searchInput').value.toLowerCase();
+      const cards = cardsContainer.querySelectorAll('.mythology-card');
+      cards.forEach(card => {
+        const name = card.querySelector('h3').textContent.toLowerCase();
+        const desc = card.querySelector('p').textContent.toLowerCase();
+        card.style.display = (name.includes(input) || desc.includes(input)) ? "block" : "none";
+      });
+    }
+
+    // Hamburger menu toggle
+    const hamburger = document.getElementById('hamburger');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+
+    hamburger.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('active');
+      hamburger.classList.toggle('active');
+    });
+
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('active');
+      hamburger.classList.remove('active');
+    });
+
+    loadCards();
+  </script>
+
+</body>
+</html>

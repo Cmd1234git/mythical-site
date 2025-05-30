@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Greek Mythology Creatures</title>
+
+  <style>
+    /* Reset and base */
+    * {
+      box-sizing: border-box;
+      margin: 0; padding: 0;
+    }
+    body, html {
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: 
+        linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)),
+        url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSUJ6EwFRtitrZbRwvksm2vQrVwyC-nW7IhtA&s') no-repeat center center fixed;
+      background-size: cover;
+      color: #eee;
+      overflow-x: hidden;
+    }
+
+    /* Sidebar styles */
+    #sidebar {
+      position: fixed;
+      top: 0; left: -280px; /* hidden by default on left */
+      width: 280px;
+      height: 100%;
+      background: rgba(18, 12, 30, 0.95);
+      box-shadow: 4px 0 15px rgba(255, 215, 0, 0.4);
+      backdrop-filter: blur(10px);
+      transition: left 0.3s ease;
+      z-index: 1100;
+      padding-top: 60px;
+    }
+    #sidebar.active {
+      left: 0;
+    }
+    #sidebar ul {
+      list-style: none;
+      padding-left: 20px;
+    }
+    #sidebar ul li {
+      margin: 20px 0;
+    }
+    #sidebar ul li a {
+      color: #ffcc00;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.1rem;
+      letter-spacing: 0.05em;
+      transition: color 0.3s;
+      display: block;
+      padding: 8px 12px;
+      border-radius: 6px;
+    }
+    #sidebar ul li a:hover {
+      background: #ffcc00;
+      color: #1a1a1a;
+      box-shadow: 0 0 8px #ffcc00;
+    }
+
+    /* Hamburger */
+    #hamburger {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      width: 34px;
+      height: 28px;
+      cursor: pointer;
+      z-index: 1200;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    #hamburger span {
+      display: block;
+      height: 4px;
+      background: #ffcc00;
+      border-radius: 3px;
+      box-shadow: 0 0 10px #ffcc00;
+      transition: all 0.3s ease;
+    }
+    /* Animate hamburger to X on open */
+    #hamburger.active span:nth-child(1) {
+      transform: rotate(45deg) translate(6px, 6px);
+    }
+    #hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+    #hamburger.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(6px, -6px);
+    }
+
+    /* Main container */
+    .container {
+      max-width: 1100px;
+      margin: 80px auto 60px;
+      padding: 0 20px;
+    }
+
+    /* Title with golden glowing frame */
+    h1.title {
+      font-size: 2.8rem;
+      font-weight: 700;
+      text-align: center;
+      color: #ffdd55;
+      text-shadow:
+        0 0 7px #21429c,
+        0 0 15px #cfb446,
+        0 0 20px #3d1d96,
+        0 0 30px #8f702d,
+        0 0 40px #61208d;
+      position: relative;
+      margin-bottom: 12px;
+      padding: 10px 30px;
+      display: inline-block;
+      border: 3px solid #ffcc00;
+      border-radius: 15px;
+      box-shadow:
+        0 0 10px #ffcc00,
+        0 0 20px #ffbb00,
+        0 0 40px #ffaa00;
+      transition: box-shadow 0.3s ease;
+      cursor: default;
+    }
+    h1.title:hover {
+      box-shadow:
+        0 0 15px #666023,
+        0 0 25px #0fcab1,
+        0 0 50px #621091,
+        0 0 80px #cfc555;
+      color: #fff;
+      animation: glowPulse 1.6s infinite alternate ease-in-out;
+    }
+    @keyframes glowPulse {
+      0% {
+        text-shadow:
+          0 0 7px #312f1a,
+          0 0 15px #68654b,
+          0 0 20px #2b2a20,
+          0 0 30px #b1af9c,
+          0 0 40px #5a5949;
+      }
+      100% {
+        text-shadow:
+          0 0 20px #fffde7,
+          0 0 40px #fffde7,
+          0 0 60px #fffde7,
+          0 0 80px #fffde7,
+          0 0 100px #fffde7;
+      }
+    }
+
+    /* Subtitle */
+    .subtitle {
+      color: #ffd95b;
+      text-align: center;
+      margin-bottom: 40px;
+      font-size: 1.1rem;
+      font-style: italic;
+      user-select: none;
+      text-shadow: 0 0 8px #ffcc00;
+    }
+
+    /* Creature cards grid */
+    .creatures {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+      gap: 28px;
+    }
+
+    /* Creature card style */
+    .creature-card {
+      background: rgba(255, 255, 255, 0.07);
+      border-radius: 18px;
+      box-shadow:
+        0 0 15px rgba(255, 204, 0, 0.25),
+        inset 0 0 10px rgba(255, 223, 90, 0.35);
+      backdrop-filter: blur(12px);
+      border: 2px solid #ffdd66;
+      padding: 18px;
+      text-align: center;
+      color: #ffe;
+      cursor: default;
+      transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .creature-card:hover {
+      transform: translateY(-10px) scale(1.05);
+      box-shadow:
+        0 0 25px #fff77f,
+        0 0 40px #ffe066,
+        inset 0 0 30px #fff87f;
+      cursor: pointer;
+    }
+
+    /* Creature image */
+    .creature-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 14px;
+      box-shadow: 0 0 10px #ffdc5c;
+      transition: filter 0.3s ease;
+    }
+    .creature-card:hover img {
+      filter: brightness(1.1);
+    }
+
+    /* Creature name */
+    .creature-card h3 {
+      margin: 15px 0 8px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      text-shadow: 0 0 8px #ffd700;
+    }
+
+    /* Description */
+    .creature-card p {
+      font-size: 0.95rem;
+      line-height: 1.4;
+      margin-bottom: 15px;
+      min-height: 60px;
+      user-select: none;
+      text-shadow: 0 0 5px #ccbb33;
+    }
+
+    /* Read more button */
+    .read-more {
+      display: inline-block;
+      padding: 10px 24px;
+      border-radius: 30px;
+      background: linear-gradient(45deg, #ffd700, #ffa500);
+      color: #3b1e00;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow:
+        0 0 15px #ffa500,
+        inset 0 0 8px #ffdd55;
+      transition: all 0.3s ease;
+      user-select: none;
+      letter-spacing: 0.06em;
+      font-size: 0.9rem;
+    }
+    .read-more:hover {
+      background: linear-gradient(45deg, #fff45f, #ffb733);
+      box-shadow:
+        0 0 20px #fff45f,
+        inset 0 0 12px #fffacd;
+      color: #1a1000;
+      transform: scale(1.1);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 25px 15px 35px;
+      font-size: 0.9rem;
+      color: #ffcc00;
+      text-shadow: 0 0 5px #ffcc00;
+      user-select: none;
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 480px) {
+      h1.title {
+        font-size: 2.2rem;
+        padding: 8px 20px;
+      }
+      .creature-card img {
+        height: 120px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hamburger menu -->
+  <div id="hamburger" aria-label="Toggle menu" role="button" tabindex="0">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <!-- Sidebar -->
+  <nav id="sidebar" aria-label="Primary navigation">
+    <ul>
+      <li><a href="mythical.html" tabindex="1">Home</a></li>
+      <li><a href="creature.html" tabindex="2">Creatures</a></li>
+      <li><a href="about.html" tabindex="3">About</a></li>
+      <li><a href="greek-mythology.html" tabindex="4" aria-current="page">Greek Mythology</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main content -->
+  <div class="container" role="main">
+    <h1 class="title" tabindex="0">Greek Mythology</h1>
+    <p class="subtitle" tabindex="0">
+      Explore the fascinating beings and gods of ancient Greece, full of mystery, power, and stories that shaped civilizations.
+    </p>
+
+    <!-- Introduction from JSON -->
+    <section id="intro" style="max-width: 800px; margin: 0 auto 50px; font-size: 1rem; line-height: 1.5; text-align:center; color:#fff8b3; text-shadow: 0 0 6px #ffcc00;">
+      <!-- Dynamically inserted -->
+    </section>
+
+    <!-- Creature cards -->
+    <section class="creatures" id="creatures-container" aria-label="List of Greek Mythology Creatures">
+      <!-- Dynamically inserted -->
+    </section>
+    
+  </div>
+
+  <footer>
+    &copy; 2025 Mythical Creatures. All rights reserved.
+  </footer>
+
+  <script>
+    // Sidebar toggle
+    const sidebar = document.getElementById('sidebar');
+    const hamburger = document.getElementById('hamburger');
+
+    function toggleSidebar() {
+      sidebar.classList.toggle('active');
+      hamburger.classList.toggle('active');
+    }
+
+    hamburger.addEventListener('click', toggleSidebar);
+
+    // Close sidebar when clicking outside or on a link
+    document.addEventListener('click', (e) => {
+      if (!sidebar.contains(e.target) && !hamburger.contains(e.target)) {
+        sidebar.classList.remove('active');
+        hamburger.classList.remove('active');
+      }
+    });
+
+    // Also close on Esc key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        sidebar.classList.remove('active');
+        hamburger.classList.remove('active');
+      }
+    });
+
+    // Data JSON for intro and creatures
+    const pageData = {
+      intro: {
+        who: "Mythical creatures of Greek mythology are supernatural beings, gods, and legendary heroes who played pivotal roles in myths passed down for centuries.",
+        whyCalled: "They are called 'mythical' because their stories explain natural phenomena, human qualities, and cultural values through fantastical narratives."
+      },
+      creatures: [
+        {
+          name: "Dionysus",
+          description: "God of wine, festivity, and ecstasy. Known for his wild celebrations and power over vine and fertility.",
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZ9eT5Yp2JPe_Be_wNgGkvSpvhmhiVsCnYrg&s",
+          link: "dionysus.html"
+        },
+        {
+          name: "Eros",
+          description: "God of love and attraction, often depicted as a winged youth with a bow and arrow.",
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFQPrNCg0oGoQ7dJkM97vtJuefRbQXydzmbQ&s",
+          link: "eros.html"
+        },
+        {
+          name: "Antaeus",
+          description: "A giant and son of Poseidon and Gaia, invincible while touching the earth but defeated by Hercules.",
+          image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/H%C3%A9rcules_luchando_con_Anteo%2C_por_Zurbar%C3%A1n.jpg/250px-H%C3%A9rcules_luchando_con_Anteo%2C_por_Zurbar%C3%A1n.jpg",
+          link: "antaeus.html"
+        },
+        {
+          name: "Apollo",
+          description: "God of the sun, music, prophecy, and healing. One of the most important Olympian deities.",
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpZGE23JB6yjk9ax19V6ZOhRFdeyfZQp-Yfg&s",
+          link: "apollo.html"
+        },
+        {
+          name: "Demeter",
+          description: "Goddess of the harvest, agriculture, and fertility. She controls the growth of crops and seasons.",
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFQd2-38xa2fkiIa9PrXDnXC9w413seK_jwg&s",
+          link: "demeter.html"
+        },
+        {
+          name: "Zeus",
+          description: "King of the gods, god of the sky and thunder, wielding the mighty lightning bolt.",
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4aSj5U1gtNVHsSZT79nXgsYOJ1bNKiyi-Aw&s",
+          link: "zeus.html"
+        },
+        {
+          name: "Alcyoneus",
+          description: "A giant who fought the Olympian gods during the Gigantomachy, known for his immense strength.",
+          image: "https://static.wikia.nocookie.net/olympians/images/0/0f/Alcyoneus.jpg/revision/latest?cb=20150509213224",
+          link: "alcyoneus.html"
+        },
+        {
+          name: "Ares",
+          description: "God of war, symbolizing the violent and chaotic aspects of battle.",
+          image: "https://static.wikia.nocookie.net/villains/images/a/a6/Ares-image.jpg/revision/latest?cb=20230718084739",
+          link: "ares.html"
+        },
+        {
+          name: "Athena",
+          description: "Goddess of wisdom, warfare strategy, and crafts. Born fully armed from Zeus’s forehead.",
+          image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Mattei_Athena_Louvre_Ma530_n2.jpg/250px-Mattei_Athena_Louvre_Ma530_n2.jpg",
+          link: "athena.html"
+        },
+        {
+          name: "Medusa",
+          description: "A Gorgon with snakes for hair, whose gaze could turn people to stone.",
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQHtsMDmoobUhOksDFXI7Rn6hecrYKBjT_NQg&s",
+          link: "medusa.html"
+        }
+      ]
+    };
+
+    // Inject intro text
+    const introSection = document.getElementById('intro');
+    introSection.innerHTML = `
+      <p><strong>Who are Mythical Creatures?</strong> ${pageData.intro.who}</p>
+      <p style="margin-top:12px;"><strong>Why are they called Mythical?</strong> ${pageData.intro.whyCalled}</p>
+    `;
+
+    // Render creature cards dynamically
+    const container = document.getElementById('creatures-container');
+
+    function createCreatureCard(creature) {
+      const card = document.createElement('article');
+      card.className = 'creature-card';
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('role', 'article');
+      card.innerHTML = `
+        <img src="${creature.image}" alt="${creature.name} image" loading="lazy" />
+        <h3>${creature.name}</h3>
+        <p>${creature.description}</p>
+        <a href="${creature.link}" class="read-more" aria-label="Read more about ${creature.name}">Read More</a>
+      `;
+      return card;
+    }
+
+    pageData.creatures.forEach(creature => {
+      container.appendChild(createCreatureCard(creature));
+    });
+  </script>
+
+</body>
+</html>
